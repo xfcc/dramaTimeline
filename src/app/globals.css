@@ -1,26 +1,50 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Core theme (fixed dark, museum-like) */
+  --bg-primary: #1a1a1e;
+  --fg-primary: #e8e6df;
+  --fg-muted: #b7b4ab;
+
+  /* Signature accents */
+  --timeline-gold: #c9a96e;
+
+  /* Rating tiers */
+  --rating-gold: #c9a96e;
+  --rating-silver: #a0a0a0;
+  --rating-gray: #555555;
+
+  /* Dynasty palette (MVP set, can expand) */
+  --dyn-warringStates: #7a4e2d;
+  --dyn-qin: #8b4513;
+  --dyn-han: #dc143c;
+  --dyn-threeKingdoms: #6b5b95;
+  --dyn-wei: #4a90e2;
+  --dyn-shu: #2ecc71;
+  --dyn-wu: #f39c12;
+  --dyn-jin: #5c6bc0;
+  --dyn-sui: #9c7c38;
+  --dyn-tang: #daa520;
+  --dyn-fiveDynastiesTenKingdoms: #8d6e63;
+  --dyn-liao: #607d8b;
+  --dyn-westernXia: #8e8cd8;
+  --dyn-jinDynasty: #009688;
+  --dyn-song: #2f4f4f;
+  --dyn-yuan: #708090;
+  --dyn-ming: #b22222;
+  --dyn-qing: #4169e1;
+  --dyn-republicOfChina: #b0bec5;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-background: var(--bg-primary);
+  --color-foreground: var(--fg-primary);
+  --font-sans: var(--font-noto-sans);
+  --font-serif: var(--font-noto-serif);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-primary);
+  color: var(--fg-primary);
+  font-family: var(--font-noto-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
 }

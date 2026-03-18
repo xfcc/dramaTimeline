@@ -1,0 +1,174 @@
+[
+  {
+    "id": "warringStates",
+    "name": "战国（后期）",
+    "start_year": -475,
+    "end_year": -221,
+    "display_order": 5,
+    "parent_id": null,
+    "color": "var(--dyn-warringStates)"
+  },
+  {
+    "id": "qin",
+    "name": "秦",
+    "start_year": -221,
+    "end_year": -206,
+    "display_order": 10,
+    "parent_id": null,
+    "color": "var(--dyn-qin)"
+  },
+  {
+    "id": "han",
+    "name": "汉",
+    "start_year": -202,
+    "end_year": 220,
+    "display_order": 20,
+    "parent_id": null,
+    "color": "var(--dyn-han)"
+  },
+  {
+    "id": "threeKingdoms",
+    "name": "三国",
+    "start_year": 220,
+    "end_year": 280,
+    "display_order": 30,
+    "parent_id": null,
+    "color": "var(--dyn-threeKingdoms)"
+  },
+  {
+    "id": "wei",
+    "name": "魏",
+    "start_year": 220,
+    "end_year": 266,
+    "display_order": 31,
+    "parent_id": "threeKingdoms",
+    "color": "var(--dyn-wei)"
+  },
+  {
+    "id": "shu",
+    "name": "蜀",
+    "start_year": 221,
+    "end_year": 263,
+    "display_order": 32,
+    "parent_id": "threeKingdoms",
+    "color": "var(--dyn-shu)"
+  },
+  {
+    "id": "wu",
+    "name": "吴",
+    "start_year": 222,
+    "end_year": 280,
+    "display_order": 33,
+    "parent_id": "threeKingdoms",
+    "color": "var(--dyn-wu)"
+  },
+  {
+    "id": "jin",
+    "name": "晋",
+    "start_year": 266,
+    "end_year": 420,
+    "display_order": 35,
+    "parent_id": null,
+    "color": "var(--dyn-jin)"
+  },
+  {
+    "id": "sui",
+    "name": "隋",
+    "start_year": 581,
+    "end_year": 618,
+    "display_order": 38,
+    "parent_id": null,
+    "color": "var(--dyn-sui)"
+  },
+  {
+    "id": "tang",
+    "name": "唐",
+    "start_year": 618,
+    "end_year": 907,
+    "display_order": 40,
+    "parent_id": null,
+    "color": "var(--dyn-tang)"
+  },
+  {
+    "id": "fiveDynastiesTenKingdoms",
+    "name": "五代十国",
+    "start_year": 907,
+    "end_year": 979,
+    "display_order": 45,
+    "parent_id": null,
+    "color": "var(--dyn-fiveDynastiesTenKingdoms)"
+  },
+  {
+    "id": "song",
+    "name": "宋",
+    "start_year": 960,
+    "end_year": 1279,
+    "display_order": 50,
+    "parent_id": null,
+    "color": "var(--dyn-song)"
+  },
+  {
+    "id": "liao",
+    "name": "辽",
+    "start_year": 916,
+    "end_year": 1125,
+    "display_order": 48,
+    "parent_id": null,
+    "color": "var(--dyn-liao)"
+  },
+  {
+    "id": "westernXia",
+    "name": "西夏",
+    "start_year": 1038,
+    "end_year": 1227,
+    "display_order": 49,
+    "parent_id": null,
+    "color": "var(--dyn-westernXia)"
+  },
+  {
+    "id": "jinDynasty",
+    "name": "金",
+    "start_year": 1115,
+    "end_year": 1234,
+    "display_order": 49,
+    "parent_id": null,
+    "color": "var(--dyn-jinDynasty)"
+  },
+  {
+    "id": "yuan",
+    "name": "元",
+    "start_year": 1271,
+    "end_year": 1368,
+    "display_order": 60,
+    "parent_id": null,
+    "color": "var(--dyn-yuan)"
+  },
+  {
+    "id": "ming",
+    "name": "明",
+    "start_year": 1368,
+    "end_year": 1644,
+    "display_order": 70,
+    "parent_id": null,
+    "color": "var(--dyn-ming)"
+  },
+  {
+    "id": "qing",
+    "name": "清",
+    "start_year": 1636,
+    "end_year": 1912,
+    "display_order": 80,
+    "parent_id": null,
+    "color": "var(--dyn-qing)"
+  },
+  {
+    "id": "republicOfChina",
+    "name": "民国",
+    "start_year": 1912,
+    "end_year": 1949,
+    "display_order": 90,
+    "parent_id": null,
+    "color": "var(--dyn-republicOfChina)"
+  }
+]
+

@@ -1,0 +1,259 @@
+[
+  {
+    "id": "damingwangchao1566",
+    "title": "大明王朝1566",
+    "category": "serious",
+    "douban_rating": 9.7,
+    "douban_rating_count": 128000,
+    "episode_count": 46,
+    "release_year": 2007,
+    "story_start_year": 1560,
+    "story_end_year": 1566,
+    "dynasty_ids": [
+      "ming"
+    ],
+    "historical_anchor": "明嘉靖三十九年—四十五年（1560-1566）",
+    "core_tension": "嘉靖、严嵩、海瑞的三角权力绞杀",
+    "poster_url": null,
+    "platforms": []
+  },
+  {
+    "id": "damfenghua",
+    "title": "大明风华",
+    "category": "romance",
+    "douban_rating": 7.9,
+    "douban_rating_count": 246000,
+    "episode_count": 64,
+    "release_year": 2019,
+    "story_start_year": 1402,
+    "story_end_year": 1449,
+    "dynasty_ids": [
+      "ming"
+    ],
+    "historical_anchor": "靖难之役后—土木之变前后（1402-1449）",
+    "core_tension": "权力更迭下的宫廷生存与家国抉择",
+    "poster_url": null,
+    "platforms": []
+  },
+  {
+    "id": "shanhueyue",
+    "title": "山河月明",
+    "category": "romance",
+    "douban_rating": 5.9,
+    "douban_rating_count": 65000,
+    "episode_count": 45,
+    "release_year": 2022,
+    "story_start_year": 1368,
+    "story_end_year": 1424,
+    "dynasty_ids": [
+      "ming"
+    ],
+    "historical_anchor": "洪武—永乐（1368-1424）",
+    "core_tension": "从开国到靖难：皇权与亲情的撕裂",
+    "poster_url": null,
+    "platforms": []
+  },
+  {
+    "id": "kangxiwangchao",
+    "title": "康熙王朝",
+    "category": "serious",
+    "douban_rating": 9.2,
+    "douban_rating_count": 310000,
+    "episode_count": 50,
+    "release_year": 2001,
+    "story_start_year": 1661,
+    "story_end_year": 1722,
+    "dynasty_ids": [
+      "qing"
+    ],
+    "historical_anchor": "康熙在位（1661-1722）",
+    "core_tension": "少年天子在内忧外患中完成帝国整合",
+    "poster_url": null,
+    "platforms": []
+  },
+  {
+    "id": "xishuoqianlong",
+    "title": "戏说乾隆",
+    "category": "romance",
+    "douban_rating": 7.6,
+    "douban_rating_count": 62000,
+    "episode_count": 40,
+    "release_year": 1991,
+    "story_start_year": 1735,
+    "story_end_year": 1796,
+    "dynasty_ids": [
+      "qing"
+    ],
+    "historical_anchor": "乾隆盛世（1735-1796）",
+    "core_tension": "帝王微服下的江湖传奇与情感纠葛",
+    "poster_url": null,
+    "platforms": []
+  },
+  {
+    "id": "zhenhuanzhuan",
+    "title": "甄嬛传",
+    "category": "romance",
+    "douban_rating": 9.4,
+    "douban_rating_count": 970000,
+    "episode_count": 76,
+    "release_year": 2011,
+    "story_start_year": 1722,
+    "story_end_year": 1735,
+    "dynasty_ids": [
+      "qing"
+    ],
+    "historical_anchor": "雍正年间（1722-1735）",
+    "core_tension": "后宫权力游戏：情感与生存的零和博弈",
+    "poster_url": null,
+    "platforms": []
+  },
+  {
+    "id": "zhenquanzhi",
+    "title": "贞观之治",
+    "category": "serious",
+    "douban_rating": 9.1,
+    "douban_rating_count": 41000,
+    "episode_count": 50,
+    "release_year": 2006,
+    "story_start_year": 626,
+    "story_end_year": 649,
+    "dynasty_ids": [
+      "tang"
+    ],
+    "historical_anchor": "玄武门之变后—贞观之治（626-649）",
+    "core_tension": "以制度与用人塑造盛世：权力如何被驯化",
+    "poster_url": null,
+    "platforms": []
+  },
+  {
+    "id": "changan12",
+    "title": "长安十二时辰",
+    "category": "romance",
+    "douban_rating": 8.3,
+    "douban_rating_count": 530000,
+    "episode_count": 48,
+    "release_year": 2019,
+    "story_start_year": 744,
+    "story_end_year": 744,
+    "dynasty_ids": [
+      "tang"
+    ],
+    "historical_anchor": "天宝三载：长安上元节（744）",
+    "core_tension": "一日之内的生死竞速：秩序与恐惧的对抗",
+    "poster_url": null,
+    "platforms": []
+  },
+  {
+    "id": "langyabang",
+    "title": "琅琊榜",
+    "category": "romance",
+    "douban_rating": 9.4,
+    "douban_rating_count": 1100000,
+    "episode_count": 54,
+    "release_year": 2015,
+    "story_start_year": 0,
+    "story_end_year": 0,
+    "dynasty_ids": [
+      "tang"
+    ],
+    "historical_anchor": "改编：以南北朝为意象的架空朝代",
+    "core_tension": "复仇与正义：一场以智谋重塑权力格局的清算",
+    "poster_url": null,
+    "platforms": []
+  },
+  {
+    "id": "qinyufu",
+    "title": "大秦赋",
+    "category": "serious",
+    "douban_rating": 7.0,
+    "douban_rating_count": 76000,
+    "episode_count": 78,
+    "release_year": 2020,
+    "story_start_year": -247,
+    "story_end_year": -221,
+    "dynasty_ids": [
+      "qin",
+      "han"
+    ],
+    "historical_anchor": "战国末—秦统一（-247 至 -221）",
+    "core_tension": "统一的代价：法与人、国与家的碰撞",
+    "poster_url": null,
+    "platforms": []
+  },
+  {
+    "id": "chuhan",
+    "title": "楚汉传奇",
+    "category": "romance",
+    "douban_rating": 7.6,
+    "douban_rating_count": 54000,
+    "episode_count": 80,
+    "release_year": 2012,
+    "story_start_year": -209,
+    "story_end_year": -202,
+    "dynasty_ids": [
+      "qin",
+      "han"
+    ],
+    "historical_anchor": "秦末—楚汉相争（-209 至 -202）",
+    "core_tension": "英雄竞逐：项羽与刘邦的时代分野",
+    "poster_url": null,
+    "platforms": []
+  },
+  {
+    "id": "sanguoyanyi",
+    "title": "三国演义",
+    "category": "romance",
+    "douban_rating": 9.6,
+    "douban_rating_count": 220000,
+    "episode_count": 84,
+    "release_year": 1994,
+    "story_start_year": 184,
+    "story_end_year": 280,
+    "dynasty_ids": [
+      "threeKingdoms",
+      "wei",
+      "shu",
+      "wu"
+    ],
+    "historical_anchor": "东汉末—三国归晋（184-280）",
+    "core_tension": "群雄逐鹿：权力、忠义与宿命的史诗",
+    "poster_url": null,
+    "platforms": []
+  },
+  {
+    "id": "shuijing",
+    "title": "水浒传",
+    "category": "romance",
+    "douban_rating": 9.0,
+    "douban_rating_count": 160000,
+    "episode_count": 43,
+    "release_year": 1998,
+    "story_start_year": 1100,
+    "story_end_year": 1121,
+    "dynasty_ids": [
+      "song"
+    ],
+    "historical_anchor": "北宋末年（约 1100-1121）",
+    "core_tension": "反抗与招安：草莽理想如何被体制吞噬",
+    "poster_url": null,
+    "platforms": []
+  },
+  {
+    "id": "damingfenghua2",
+    "title": "大宋提刑官",
+    "category": "serious",
+    "douban_rating": 9.3,
+    "douban_rating_count": 200000,
+    "episode_count": 52,
+    "release_year": 2005,
+    "story_start_year": 1200,
+    "story_end_year": 1210,
+    "dynasty_ids": [
+      "song"
+    ],
+    "historical_anchor": "南宋：宋慈断案（约 1200-1210）",
+    "core_tension": "以法对抗权：真相如何穿透人情网",
+    "poster_url": null,
+    "platforms": []
+  }
+]
