@@ -1,11 +1,12 @@
 [
   {
-    "id": "warringStates",
-    "name": "战国（后期）",
-    "start_year": -475,
+    "id": "springAndAutumnWarringStates",
+    "name": "春秋战国",
+    "start_year": -770,
     "end_year": -221,
     "display_order": 5,
     "parent_id": null,
+    "track": "main",
     "color": "var(--dyn-warringStates)"
   },
   {
@@ -15,15 +16,57 @@
     "end_year": -206,
     "display_order": 10,
     "parent_id": null,
+    "track": "main",
     "color": "var(--dyn-qin)"
   },
   {
+    "id": "chuHan",
+    "name": "楚汉之争",
+    "start_year": -206,
+    "end_year": -202,
+    "display_order": 15,
+    "parent_id": null,
+    "track": "main",
+    "color": "var(--dyn-chuHan)"
+  },
+  {
     "id": "han",
-    "name": "汉",
+    "name": "两汉",
     "start_year": -202,
     "end_year": 220,
     "display_order": 20,
     "parent_id": null,
+    "track": "main",
+    "color": "var(--dyn-han)"
+  },
+  {
+    "id": "westernHan",
+    "name": "西汉",
+    "start_year": -202,
+    "end_year": 8,
+    "display_order": 21,
+    "parent_id": "han",
+    "track": "main",
+    "color": "var(--dyn-han)"
+  },
+  {
+    "id": "xin",
+    "name": "新(王莽)",
+    "start_year": 8,
+    "end_year": 23,
+    "display_order": 22,
+    "parent_id": "han",
+    "track": "main",
+    "color": "var(--dyn-xin)"
+  },
+  {
+    "id": "easternHan",
+    "name": "东汉",
+    "start_year": 25,
+    "end_year": 220,
+    "display_order": 23,
+    "parent_id": "han",
+    "track": "main",
     "color": "var(--dyn-han)"
   },
   {
@@ -33,43 +76,58 @@
     "end_year": 280,
     "display_order": 30,
     "parent_id": null,
+    "track": "main",
     "color": "var(--dyn-threeKingdoms)"
   },
   {
     "id": "wei",
-    "name": "魏",
+    "name": "曹魏",
     "start_year": 220,
     "end_year": 266,
     "display_order": 31,
     "parent_id": "threeKingdoms",
+    "track": "main",
     "color": "var(--dyn-wei)"
   },
   {
     "id": "shu",
-    "name": "蜀",
+    "name": "蜀汉",
     "start_year": 221,
     "end_year": 263,
     "display_order": 32,
     "parent_id": "threeKingdoms",
+    "track": "parallel_1",
     "color": "var(--dyn-shu)"
   },
   {
     "id": "wu",
-    "name": "吴",
+    "name": "东吴",
     "start_year": 222,
     "end_year": 280,
     "display_order": 33,
     "parent_id": "threeKingdoms",
+    "track": "parallel_2",
     "color": "var(--dyn-wu)"
   },
   {
     "id": "jin",
-    "name": "晋",
+    "name": "两晋",
     "start_year": 266,
     "end_year": 420,
     "display_order": 35,
     "parent_id": null,
+    "track": "main",
     "color": "var(--dyn-jin)"
+  },
+  {
+    "id": "northernAndSouthern",
+    "name": "南北朝",
+    "start_year": 420,
+    "end_year": 589,
+    "display_order": 37,
+    "parent_id": null,
+    "track": "main",
+    "color": "var(--dyn-northernAndSouthern)"
   },
   {
     "id": "sui",
@@ -78,6 +136,7 @@
     "end_year": 618,
     "display_order": 38,
     "parent_id": null,
+    "track": "main",
     "color": "var(--dyn-sui)"
   },
   {
@@ -87,6 +146,7 @@
     "end_year": 907,
     "display_order": 40,
     "parent_id": null,
+    "track": "main",
     "color": "var(--dyn-tang)"
   },
   {
@@ -96,15 +156,47 @@
     "end_year": 979,
     "display_order": 45,
     "parent_id": null,
+    "track": "main",
     "color": "var(--dyn-fiveDynastiesTenKingdoms)"
   },
   {
+    "id": "songLiaoXiaJin",
+    "name": "宋辽夏金",
+    "start_year": 916,
+    "end_year": 1279,
+    "display_order": 47,
+    "parent_id": null,
+    "track": "main",
+    "color": "var(--dyn-song)"
+  },
+  {
     "id": "song",
-    "name": "宋",
+    "name": "两宋",
     "start_year": 960,
     "end_year": 1279,
     "display_order": 50,
-    "parent_id": null,
+    "parent_id": "songLiaoXiaJin",
+    "track": "main",
+    "color": "var(--dyn-song)"
+  },
+  {
+    "id": "northernSong",
+    "name": "北宋",
+    "start_year": 960,
+    "end_year": 1127,
+    "display_order": 51,
+    "parent_id": "song",
+    "track": "main",
+    "color": "var(--dyn-song)"
+  },
+  {
+    "id": "southernSong",
+    "name": "南宋",
+    "start_year": 1127,
+    "end_year": 1279,
+    "display_order": 52,
+    "parent_id": "song",
+    "track": "main",
     "color": "var(--dyn-song)"
   },
   {
@@ -113,7 +205,8 @@
     "start_year": 916,
     "end_year": 1125,
     "display_order": 48,
-    "parent_id": null,
+    "parent_id": "songLiaoXiaJin",
+    "track": "parallel_1",
     "color": "var(--dyn-liao)"
   },
   {
@@ -122,7 +215,8 @@
     "start_year": 1038,
     "end_year": 1227,
     "display_order": 49,
-    "parent_id": null,
+    "parent_id": "songLiaoXiaJin",
+    "track": "parallel_2",
     "color": "var(--dyn-westernXia)"
   },
   {
@@ -130,8 +224,9 @@
     "name": "金",
     "start_year": 1115,
     "end_year": 1234,
-    "display_order": 49,
-    "parent_id": null,
+    "display_order": 53,
+    "parent_id": "songLiaoXiaJin",
+    "track": "parallel_3",
     "color": "var(--dyn-jinDynasty)"
   },
   {
@@ -141,6 +236,7 @@
     "end_year": 1368,
     "display_order": 60,
     "parent_id": null,
+    "track": "main",
     "color": "var(--dyn-yuan)"
   },
   {
@@ -150,15 +246,17 @@
     "end_year": 1644,
     "display_order": 70,
     "parent_id": null,
+    "track": "main",
     "color": "var(--dyn-ming)"
   },
   {
     "id": "qing",
     "name": "清",
-    "start_year": 1636,
+    "start_year": 1644,
     "end_year": 1912,
     "display_order": 80,
     "parent_id": null,
+    "track": "main",
     "color": "var(--dyn-qing)"
   },
   {
@@ -168,7 +266,7 @@
     "end_year": 1949,
     "display_order": 90,
     "parent_id": null,
+    "track": "main",
     "color": "var(--dyn-republicOfChina)"
   }
 ]
-

@@ -1,21 +1,29 @@
 export type DramaCategory = "serious" | "romance";
 
 export type DynastyId =
-  | "warringStates"
+  | "springAndAutumnWarringStates"
   | "qin"
+  | "chuHan"
   | "han"
+  | "westernHan"
+  | "xin"
+  | "easternHan"
   | "threeKingdoms"
   | "wei"
   | "shu"
   | "wu"
   | "jin"
+  | "northernAndSouthern"
   | "sui"
   | "tang"
   | "fiveDynastiesTenKingdoms"
+  | "songLiaoXiaJin"
+  | "song"
+  | "northernSong"
+  | "southernSong"
   | "liao"
   | "westernXia"
   | "jinDynasty"
-  | "song"
   | "yuan"
   | "ming"
   | "qing"
@@ -28,6 +36,7 @@ export type Dynasty = {
   end_year: number;
   display_order: number;
   parent_id: DynastyId | null;
+  track: string;
   color: string;
 };
 
@@ -52,4 +61,3 @@ export type Drama = {
   poster_url: string | null;
   platforms: Platform[];
 };
-
