@@ -1,36 +1,19 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 国产历史剧全景时间轴
 
-## Getting Started
+以朝代为锚点的国产历史剧可视化索引引擎。纵向时间线串联从战国到民国的历史剧图谱，一眼看清每个朝代有哪些值得看的剧。
 
-First, run the development server:
+## 功能
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **纵向时间线** — Aceternity 风格滚动光束，左侧朝代标题随滚动 sticky 固定
+- **朝代全覆盖** — 战国、秦、汉、三国（魏/蜀/吴）、晋、隋、唐、五代十国、辽/西夏/金、宋、元、明、清、民国
+- **考据滤镜** — 严肃正剧 / 史事演义 一键切换，剧集实时过滤
+- **悬浮卡片** — 鼠标悬停弹出毛玻璃信息卡：豆瓣评分、历史锚点、核心张力、集数、播放平台
+- **深色博物馆主题** — 暖灰底色 + 金色时间线 + 朝代配色体系，克制而高级
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 技术栈
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Next.js 16** (App Router) + **React 19** + **TypeScript**
+- **Framer Motion 11** — 滚动光束、layout 动画、spring 物理缓动
+- **Tailwind CSS v4** — Design Tokens + CSS Variables
+- **思源宋体 / 思源黑体** — 通过 `next/font` 加载
+- 本地 JSON 数据，静态导出，零后端依赖
