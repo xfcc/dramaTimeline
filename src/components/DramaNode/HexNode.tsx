@@ -27,7 +27,7 @@ export function HexNode({
   onLeave?: () => void;
 }) {
   const borderColor = ratingTier(drama.douban_rating);
-  const isCrossDynasty = drama.dynasty_ids.length > 1;
+  const isCrossDynasty = false;
 
   return (
     <motion.button

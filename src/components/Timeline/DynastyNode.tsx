@@ -23,7 +23,7 @@ export function DynastyNode({
   isActive: boolean;
   onToggle: (dynastyId: Dynasty["id"]) => void;
 }) {
-  const dynastyDramas = dramas.filter((d) => d.dynasty_ids.includes(dynasty.id));
+  const dynastyDramas = dramas.filter((d) => d.dynasty_id === dynasty.id);
   const filteredCount = dynastyDramas.filter(filterDrama).length;
 
   return (

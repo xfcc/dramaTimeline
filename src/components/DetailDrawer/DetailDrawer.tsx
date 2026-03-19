@@ -34,10 +34,7 @@ export function DetailDrawer({
   const dynastyMap = new Map<DynastyId, string>(
     dynasties.map((d) => [d.id, d.name]),
   );
-  const dynastyNames = drama.dynasty_ids
-    .map((id) => dynastyMap.get(id))
-    .filter(Boolean)
-    .join(" · ");
+  const dynastyName = dynastyMap.get(drama.dynasty_id) ?? "";
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -197,9 +194,9 @@ export function DetailDrawer({
               <p className="mt-1.5 text-sm text-[color:var(--fg-primary)]">
                 {formatYear(drama.story_start_year)} –{" "}
                 {formatYear(drama.story_end_year)}
-                {dynastyNames ? (
+                {dynastyName ? (
                   <span className="ml-2 text-[color:var(--fg-muted)]">
-                    （{dynastyNames}）
+                    （{dynastyName}）
                   </span>
                 ) : null}
               </p>

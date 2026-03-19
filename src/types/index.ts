@@ -55,7 +55,7 @@ export type Drama = {
   release_year: number;
   story_start_year: number;
   story_end_year: number;
-  dynasty_ids: DynastyId[];
+  dynasty_id: DynastyId;
   historical_anchor: string;
   core_tension: string;
   poster_url: string | null;

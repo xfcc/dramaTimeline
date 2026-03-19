@@ -268,16 +268,16 @@ function buildTimelineRows(
       sorted.forEach((c) => colMap.set(c.dynasty.id, []));
 
       const relevant = dramas
-        .filter((d) => d.dynasty_ids.some((id) => allDescIds.has(id)))
+        .filter((d) => allDescIds.has(d.dynasty_id))
         .filter(filterFn);
 
       for (const drama of relevant) {
-        if (drama.dynasty_ids.includes(node.dynasty.id)) {
+        if (drama.dynasty_id === node.dynasty.id) {
           cross.push(drama);
           continue;
         }
         const matched = childIdSets.filter(({ ids }) =>
-          drama.dynasty_ids.some((id) => ids.has(id)),
+          ids.has(drama.dynasty_id),
         );
         if (matched.length > 1) cross.push(drama);
         else if (matched.length === 1)
@@ -323,7 +323,7 @@ function buildTimelineRows(
     } else {
       const allIds = new Set(collectDescendantIds(node));
       const dynastyDramas = dramas
-        .filter((d) => d.dynasty_ids.some((id) => allIds.has(id)))
+        .filter((d) => allIds.has(d.dynasty_id))
         .filter(filterFn);
       out.push({
         key: `simple-${node.dynasty.id}`,
