@@ -1,22 +1,22 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 import type { Drama, Dynasty, DynastyId } from "@/types";
 import { CategoryFilter } from "@/components/Filter/CategoryFilter";
 import { useFilter } from "@/hooks/useFilter";
-import { DramaRow } from "@/components/DramaNode/DramaRow";
-import { useHoverCard } from "@/hooks/useHoverCard";
-import { HoverCard } from "@/components/DramaNode/HoverCard";
+import { useDetailDrawer } from "@/hooks/useDetailDrawer";
+import { DetailDrawerPortal } from "@/components/DetailDrawer/DetailDrawer";
+import { DramaCard } from "@/components/DramaNode/DramaRow";
 
-/* ─── Layout constants ─── */
+/* ─── Layout: left = timeline axis, right = drama area ─── */
 
+const LEFT_COL_WIDTH = 280;
 const LINE_X = 32;
-const CONTENT_LEFT = LINE_X + 48;
-const INDENT = 160;
+const LABEL_LEFT = LINE_X + 48;
+const INDENT = 140;
 const INDENTED_LINE_X = LINE_X + INDENT;
-const INDENTED_CONTENT = INDENTED_LINE_X + 48;
 
 /* ─── Dynasty tree ─── */
 
@@ -64,11 +64,47 @@ function sortChildrenByTrack(children: DynastyNode[]): DynastyNode[] {
   });
 }
 
-/* ─── Helpers ─── */
-
 function formatYear(year: number) {
   if (year < 0) return `前${Math.abs(year)}`;
   return String(year);
+}
+
+/* ─── Row type for two-column layout ─── */
+
+type TimelineRow = {
+  key: string;
+  left: React.ReactNode;
+  right: React.ReactNode;
+};
+
+/* ─── Curved branch connector (SVG, no right angles) ─── */
+
+function BranchCurve() {
+  const w = LEFT_COL_WIDTH;
+  const startX = LINE_X;
+  const endX = INDENTED_LINE_X;
+  const startY = 0;
+  const endY = 28;
+  const cpx1 = startX + (endX - startX) * 0.5;
+  const cpy1 = startY;
+  const cpx2 = endX - (endX - startX) * 0.2;
+  const cpy2 = endY;
+
+  return (
+    <svg
+      width={w}
+      height={endY + 4}
+      className="absolute left-0 top-0 block overflow-visible"
+      style={{ pointerEvents: "none" }}
+    >
+      <path
+        d={`M ${startX} ${startY} C ${cpx1} ${cpy1}, ${cpx2} ${cpy2}, ${endX} ${endY}`}
+        fill="none"
+        stroke="color-mix(in oklab, var(--timeline-gold) 22%, transparent)"
+        strokeWidth={1}
+      />
+    </svg>
+  );
 }
 
 /* ─── Root ─── */
@@ -81,8 +117,8 @@ export function Timeline({
   dramas: Drama[];
 }) {
   const tree = useMemo(() => buildTree(dynasties), [dynasties]);
-  const filter = useFilter("all");
-  const hover = useHoverCard(200);
+  const filter = useFilter("serious");
+  const drawer = useDetailDrawer();
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [lineHeight, setLineHeight] = useState(0);
@@ -104,6 +140,15 @@ export function Timeline({
     return () => ro.disconnect();
   }, []);
 
+  const rows = useMemo(
+    () =>
+      buildTimelineRows(tree, dramas, filter.filterDrama, {
+        formatYear,
+        onDramaClick: drawer.open,
+      }),
+    [tree, dramas, filter.filterDrama, drawer.open],
+  );
+
   return (
     <section
       className="min-h-screen"
@@ -113,7 +158,6 @@ export function Timeline({
         className="py-12"
         style={{ paddingLeft: "clamp(80px, 10vw, 200px)", paddingRight: 40 }}
       >
-        {/* Header */}
         <header className="mb-16 max-w-4xl">
           <div className="flex items-start justify-between gap-6">
             <div>
@@ -130,128 +174,190 @@ export function Timeline({
           </div>
         </header>
 
-        {/* HoverCard */}
-        <AnimatePresence>
-          {hover.state.open ? (
-            <HoverCard
-              key={hover.state.drama.id}
-              drama={hover.state.drama}
-              anchorRect={hover.state.anchorRect}
-              onMouseEnter={hover.cancelClose}
-              onMouseLeave={() => hover.scheduleClose(120)}
-            />
-          ) : null}
-        </AnimatePresence>
+        <DetailDrawerPortal
+          state={drawer.state}
+          dynasties={dynasties}
+          onClose={drawer.close}
+        />
 
-        {/* Timeline */}
         <div ref={containerRef} className="relative pb-20">
-          {/* Main vertical line */}
+          {/* Axis outside grid: fixed height = content height so line is visible while scrolling */}
           <div
-            className="absolute top-0"
+            className="pointer-events-none absolute left-0 top-0 z-10"
             style={{
-              left: LINE_X,
+              width: LEFT_COL_WIDTH,
               height: lineHeight > 0 ? lineHeight : "100%",
             }}
           >
-            <div className="absolute inset-0 w-px bg-[color:var(--timeline-gold)]/20" />
+            <div
+              className="absolute top-0 w-px"
+              style={{
+                left: LINE_X,
+                height: "100%",
+                background:
+                  "color-mix(in oklab, var(--timeline-gold) 45%, transparent)",
+              }}
+            />
             <motion.div
               className="absolute left-0 top-0 w-px origin-top"
               style={{
+                left: LINE_X,
                 height: beamHeight,
                 opacity: beamOpacity,
                 background:
                   "linear-gradient(to bottom, transparent, var(--timeline-gold) 10%, var(--timeline-gold) 90%, transparent)",
               }}
             />
-            <motion.div
-              className="absolute -left-1 top-0 h-3 w-3 rounded-full"
-              style={{
-                y: beamHeight,
-                opacity: beamOpacity,
-                background: "var(--timeline-gold)",
-                boxShadow:
-                  "0 0 10px 3px color-mix(in oklab, var(--timeline-gold) 50%, transparent)",
-              }}
-            />
           </div>
 
-          {/* Entries */}
-          {tree.map((node) => (
-            <EntryNode
-              key={node.dynasty.id}
-              node={node}
-              dramas={dramas}
-              filterFn={filter.filterDrama}
-              onDramaHover={hover.open}
-              onDramaLeave={() => hover.scheduleClose(120)}
-            />
-          ))}
+          <div
+            className="grid"
+            style={{
+              gridTemplateColumns: `${LEFT_COL_WIDTH}px 1fr`,
+              gridAutoRows: "minmax(60px, auto)",
+              alignItems: "start",
+            }}
+          >
+            {/* Row pairs: left cell (col 1) + right cell (col 2); content z-20 so above axis */}
+            {rows.map((r, i) => [
+              <div
+                key={`${r.key}-left`}
+                className="relative z-0"
+                style={{ gridColumn: 1, gridRow: i + 1 }}
+              >
+                {r.left}
+              </div>,
+              <div
+                key={`${r.key}-right`}
+                className="min-w-0 pl-6 pb-10"
+                style={{ gridColumn: 2, gridRow: i + 1 }}
+              >
+                {r.right}
+              </div>,
+            ])}
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-/* ─── Entry dispatcher ─── */
+/* ─── Build flat rows for two-column grid ─── */
 
-function EntryNode({
-  node,
-  dramas,
-  filterFn,
-  onDramaHover,
-  onDramaLeave,
-}: {
-  node: DynastyNode;
-  dramas: Drama[];
-  filterFn: (drama: Drama) => boolean;
-  onDramaHover: (drama: Drama, el: Element) => void;
-  onDramaLeave: () => void;
-}) {
-  if (node.isParallel) {
-    return (
-      <ParallelSection
-        node={node}
-        dramas={dramas}
-        filterFn={filterFn}
-        onDramaHover={onDramaHover}
-        onDramaLeave={onDramaLeave}
-      />
-    );
+function buildTimelineRows(
+  tree: DynastyNode[],
+  dramas: Drama[],
+  filterFn: (d: Drama) => boolean,
+  ctx: {
+    formatYear: (y: number) => string;
+    onDramaClick: (drama: Drama) => void;
+  },
+): TimelineRow[] {
+  const out: TimelineRow[] = [];
+
+  for (const node of tree) {
+    if (node.isParallel) {
+      const sorted = sortChildrenByTrack(node.children);
+      const allDescIds = new Set(collectDescendantIds(node));
+      const childIdSets = sorted.map((c) => ({
+        node: c,
+        ids: new Set(collectDescendantIds(c)),
+      }));
+      const cross: Drama[] = [];
+      const colMap = new Map<DynastyId, Drama[]>();
+      sorted.forEach((c) => colMap.set(c.dynasty.id, []));
+
+      const relevant = dramas
+        .filter((d) => d.dynasty_ids.some((id) => allDescIds.has(id)))
+        .filter(filterFn);
+
+      for (const drama of relevant) {
+        if (drama.dynasty_ids.includes(node.dynasty.id)) {
+          cross.push(drama);
+          continue;
+        }
+        const matched = childIdSets.filter(({ ids }) =>
+          drama.dynasty_ids.some((id) => ids.has(id)),
+        );
+        if (matched.length > 1) cross.push(drama);
+        else if (matched.length === 1)
+          colMap.get(matched[0].node.dynasty.id)!.push(drama);
+      }
+
+      out.push({
+        key: `parallel-parent-${node.dynasty.id}`,
+        left: (
+          <LeftCellMain
+            dynasty={node.dynasty}
+            formatYear={ctx.formatYear}
+            labelExtra="并行政权"
+          />
+        ),
+        right: (
+          <RightCellDramas
+            dramas={cross}
+            title="跨政权群像"
+            onDramaClick={ctx.onDramaClick}
+          />
+        ),
+      });
+
+      for (const child of sorted) {
+        const childDramas = colMap.get(child.dynasty.id) ?? [];
+        out.push({
+          key: `parallel-branch-${child.dynasty.id}`,
+          left: (
+            <LeftCellBranch
+              dynasty={child.dynasty}
+              formatYear={ctx.formatYear}
+            />
+          ),
+          right: (
+            <RightCellDramas
+              dramas={childDramas}
+              onDramaClick={ctx.onDramaClick}
+            />
+          ),
+        });
+      }
+    } else {
+      const allIds = new Set(collectDescendantIds(node));
+      const dynastyDramas = dramas
+        .filter((d) => d.dynasty_ids.some((id) => allIds.has(id)))
+        .filter(filterFn);
+      out.push({
+        key: `simple-${node.dynasty.id}`,
+        left: (
+          <LeftCellMain dynasty={node.dynasty} formatYear={ctx.formatYear} />
+        ),
+        right: (
+          <RightCellDramas
+            dramas={dynastyDramas}
+            onDramaClick={ctx.onDramaClick}
+          />
+        ),
+      });
+    }
   }
 
-  const allIds = new Set(collectDescendantIds(node));
-  const dynastyDramas = dramas
-    .filter((d) => d.dynasty_ids.some((id) => allIds.has(id)))
-    .filter(filterFn);
-
-  return (
-    <SimpleEntry
-      dynasty={node.dynasty}
-      dramas={dynastyDramas}
-      onDramaHover={onDramaHover}
-      onDramaLeave={onDramaLeave}
-    />
-  );
+  return out;
 }
 
-/* ─── Simple entry (single track, on main line) ─── */
+/* ─── Left cell: main axis dot + label ─── */
 
-function SimpleEntry({
+function LeftCellMain({
   dynasty,
-  dramas,
-  onDramaHover,
-  onDramaLeave,
+  formatYear,
+  labelExtra,
 }: {
   dynasty: Dynasty;
-  dramas: Drama[];
-  onDramaHover: (drama: Drama, el: Element) => void;
-  onDramaLeave: () => void;
+  formatYear: (y: number) => string;
+  labelExtra?: string;
 }) {
   return (
-    <div className="relative pb-10" style={{ paddingLeft: CONTENT_LEFT }}>
-      {/* Dot on main line */}
+    <div className="relative z-20 pt-1" style={{ paddingLeft: LABEL_LEFT }}>
       <div
-        className="absolute top-1.5 h-3.5 w-3.5 rounded-full border-2"
+        className="absolute top-2.5 h-3.5 w-3.5 rounded-full border-2"
         style={{
           left: LINE_X - 7,
           backgroundColor: dynasty.color,
@@ -259,107 +365,7 @@ function SimpleEntry({
             "color-mix(in oklab, var(--timeline-gold) 60%, transparent)",
         }}
       />
-
-      <div className="flex max-w-3xl gap-8 md:gap-12">
-        <div className="sticky top-20 w-36 shrink-0 self-start md:w-44">
-          <h3
-            className="font-[family-name:var(--font-noto-serif)] text-lg tracking-wide md:text-xl"
-            style={{ color: dynasty.color }}
-          >
-            {dynasty.name}
-          </h3>
-          <p className="mt-1 text-xs text-[color:var(--fg-muted)]">
-            {formatYear(dynasty.start_year)} – {formatYear(dynasty.end_year)}
-          </p>
-        </div>
-
-        <div className="min-w-0 flex-1 pt-0.5">
-          {dramas.length > 0 ? (
-            <div className="flex flex-col gap-3">
-              {dramas.map((drama) => (
-                <DramaRow
-                  key={drama.id}
-                  drama={drama}
-                  onHover={onDramaHover}
-                  onLeave={onDramaLeave}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="rounded-lg border border-dashed border-white/10 py-4 text-center text-xs text-[color:var(--fg-muted)]/60">
-              暂无收录剧集
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ─── Parallel section (tree-style indented branches) ─── */
-
-function ParallelSection({
-  node,
-  dramas,
-  filterFn,
-  onDramaHover,
-  onDramaLeave,
-}: {
-  node: DynastyNode;
-  dramas: Drama[];
-  filterFn: (drama: Drama) => boolean;
-  onDramaHover: (drama: Drama, el: Element) => void;
-  onDramaLeave: () => void;
-}) {
-  const { dynasty, children } = node;
-  const sorted = useMemo(() => sortChildrenByTrack(children), [children]);
-
-  const { crossDramas, columnDramasMap } = useMemo(() => {
-    const allDescIds = new Set(collectDescendantIds(node));
-    const childIdSets = sorted.map((child) => ({
-      node: child,
-      ids: new Set(collectDescendantIds(child)),
-    }));
-
-    const cross: Drama[] = [];
-    const colMap = new Map<DynastyId, Drama[]>();
-    sorted.forEach((c) => colMap.set(c.dynasty.id, []));
-
-    const relevant = dramas
-      .filter((d) => d.dynasty_ids.some((id) => allDescIds.has(id)))
-      .filter(filterFn);
-
-    for (const drama of relevant) {
-      if (drama.dynasty_ids.includes(dynasty.id)) {
-        cross.push(drama);
-        continue;
-      }
-      const matched = childIdSets.filter(({ ids }) =>
-        drama.dynasty_ids.some((id) => ids.has(id)),
-      );
-      if (matched.length > 1) {
-        cross.push(drama);
-      } else if (matched.length === 1) {
-        colMap.get(matched[0].node.dynasty.id)!.push(drama);
-      }
-    }
-
-    return { crossDramas: cross, columnDramasMap: colMap };
-  }, [node, dynasty.id, sorted, dramas, filterFn]);
-
-  return (
-    <div className="relative">
-      {/* ── Parent marker on main line ── */}
-      <div className="relative pb-4" style={{ paddingLeft: CONTENT_LEFT }}>
-        <div
-          className="absolute top-1.5 h-3.5 w-3.5 rounded-full border-2"
-          style={{
-            left: LINE_X - 7,
-            backgroundColor: dynasty.color,
-            borderColor:
-              "color-mix(in oklab, var(--timeline-gold) 60%, transparent)",
-          }}
-        />
+      <div className="sticky top-20">
         <h3
           className="font-[family-name:var(--font-noto-serif)] text-lg tracking-wide md:text-xl"
           style={{ color: dynasty.color }}
@@ -368,121 +374,43 @@ function ParallelSection({
         </h3>
         <p className="mt-1 text-xs text-[color:var(--fg-muted)]">
           {formatYear(dynasty.start_year)} – {formatYear(dynasty.end_year)}
-          <span className="ml-2 text-[color:var(--timeline-gold)]/60">
-            并行政权
-          </span>
+          {labelExtra ? (
+            <span className="ml-2 text-[color:var(--timeline-gold)]/60">
+              {labelExtra}
+            </span>
+          ) : null}
         </p>
       </div>
-
-      {/* ── Cross-regime dramas ── */}
-      {crossDramas.length > 0 && (
-        <div className="pb-4" style={{ paddingLeft: CONTENT_LEFT }}>
-          <p className="mb-2 text-[11px] font-medium tracking-wider uppercase text-[color:var(--fg-muted)]">
-            跨政权群像
-          </p>
-          <div className="flex max-w-md flex-col gap-2">
-            {crossDramas.map((drama) => (
-              <DramaRow
-                key={drama.id}
-                drama={drama}
-                onHover={onDramaHover}
-                onLeave={onDramaLeave}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* ── Indented child branches ── */}
-      {sorted.map((child, i) => (
-        <IndentedEntry
-          key={child.dynasty.id}
-          dynasty={child.dynasty}
-          dramas={columnDramasMap.get(child.dynasty.id) ?? []}
-          isLast={i === sorted.length - 1}
-          onDramaHover={onDramaHover}
-          onDramaLeave={onDramaLeave}
-        />
-      ))}
-
-      {/* Bottom spacing after all branches */}
-      <div className="h-6" />
     </div>
   );
 }
 
-/* ─── Indented entry (one branch in a parallel section) ─── */
+/* ─── Left cell: curved branch + dot + label ─── */
 
-function IndentedEntry({
+function LeftCellBranch({
   dynasty,
-  dramas,
-  isLast,
-  onDramaHover,
-  onDramaLeave,
+  formatYear,
 }: {
   dynasty: Dynasty;
-  dramas: Drama[];
-  isLast: boolean;
-  onDramaHover: (drama: Drama, el: Element) => void;
-  onDramaLeave: () => void;
+  formatYear: (y: number) => string;
 }) {
   return (
-    <div
-      className="relative pb-6"
-      style={{ paddingLeft: INDENTED_CONTENT, minHeight: 72 }}
-    >
-      {/* ── Horizontal branch from main line ── */}
-      <div
-        className="absolute"
-        style={{
-          left: LINE_X,
-          top: 8,
-          width: INDENT,
-          height: 1,
-          background:
-            "color-mix(in oklab, var(--timeline-gold) 20%, transparent)",
-        }}
-      />
-
-      {/* ── Junction dot on main line ── */}
-      <div
-        className="absolute rounded-full"
-        style={{
-          left: LINE_X - 3,
-          top: 5,
-          width: 7,
-          height: 7,
-          background:
-            "color-mix(in oklab, var(--timeline-gold) 35%, transparent)",
-        }}
-      />
-
-      {/* ── Indented vertical axis ── */}
-      <div
-        className="absolute w-px"
-        style={{
-          left: INDENTED_LINE_X,
-          top: 8,
-          height: isLast ? "calc(100% - 24px)" : "100%",
-          background:
-            "color-mix(in oklab, var(--timeline-gold) 15%, transparent)",
-        }}
-      />
-
-      {/* ── Dot on indented axis ── */}
+    <div className="relative z-20 pt-1">
+      <BranchCurve />
       <div
         className="absolute h-3 w-3 rounded-full border-2"
         style={{
           left: INDENTED_LINE_X - 6,
-          top: 2,
+          top: 26,
           backgroundColor: dynasty.color,
           borderColor:
             "color-mix(in oklab, var(--timeline-gold) 50%, transparent)",
         }}
       />
-
-      {/* ── Content ── */}
-      <div className="max-w-md">
+      <div
+        className="pt-1"
+        style={{ paddingLeft: INDENTED_LINE_X + 32, paddingTop: 4 }}
+      >
         <h4
           className="font-[family-name:var(--font-noto-serif)] text-sm tracking-wide"
           style={{ color: dynasty.color }}
@@ -492,26 +420,44 @@ function IndentedEntry({
         <p className="mt-0.5 text-[11px] text-[color:var(--fg-muted)]">
           {formatYear(dynasty.start_year)} – {formatYear(dynasty.end_year)}
         </p>
-
-        <div className="mt-3">
-          {dramas.length > 0 ? (
-            <div className="flex flex-col gap-2">
-              {dramas.map((drama) => (
-                <DramaRow
-                  key={drama.id}
-                  drama={drama}
-                  onHover={onDramaHover}
-                  onLeave={onDramaLeave}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="rounded border border-dashed border-white/8 py-3 text-center text-[11px] text-[color:var(--fg-muted)]/40">
-              暂无收录
-            </div>
-          )}
-        </div>
       </div>
+    </div>
+  );
+}
+
+/* ─── Right cell: drama list (aligned column) ─── */
+
+function RightCellDramas({
+  dramas,
+  title,
+  onDramaClick,
+}: {
+  dramas: Drama[];
+  title?: string;
+  onDramaClick: (drama: Drama) => void;
+}) {
+  return (
+    <div className="min-w-0 max-w-2xl pt-0.5">
+      {title && dramas.length > 0 ? (
+        <p className="mb-2 text-[11px] font-medium tracking-wider uppercase text-[color:var(--fg-muted)]">
+          {title}
+        </p>
+      ) : null}
+      {dramas.length > 0 ? (
+        <div className="flex flex-wrap gap-4">
+          {dramas.map((drama) => (
+            <DramaCard
+              key={drama.id}
+              drama={drama}
+              onClick={onDramaClick}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="w-[280px] rounded-lg border border-dashed border-white/10 py-4 text-center text-xs text-[color:var(--fg-muted)]/60">
+          暂无收录剧集
+        </div>
+      )}
     </div>
   );
 }

@@ -3,19 +3,17 @@
 import { AnimatePresence, motion } from "framer-motion";
 
 import type { Drama, Dynasty } from "@/types";
-import { HoverCard } from "@/components/DramaNode/HoverCard";
-import { useHoverCard } from "@/hooks/useHoverCard";
-import { DramaRow } from "@/components/DramaNode/DramaRow";
+import { DramaCard } from "@/components/DramaNode/DramaRow";
 
 export function DynastyExpanded({
   dynasty,
   dramas,
+  onDramaClick,
 }: {
   dynasty: Dynasty;
   dramas: Drama[];
+  onDramaClick?: (drama: Drama) => void;
 }) {
-  const hover = useHoverCard(200);
-
   return (
     <motion.div
       layout
@@ -24,18 +22,6 @@ export function DynastyExpanded({
       exit={{ opacity: 0 }}
       className="mt-3 w-full"
     >
-      <AnimatePresence>
-        {hover.state.open ? (
-          <HoverCard
-            key={hover.state.drama.id}
-            drama={hover.state.drama}
-            anchorRect={hover.state.anchorRect}
-            onMouseEnter={hover.cancelClose}
-            onMouseLeave={() => hover.scheduleClose(120)}
-          />
-        ) : null}
-      </AnimatePresence>
-
       <div className="rounded-lg border border-white/10 bg-white/3 p-3">
         <div className="mb-3 flex items-baseline justify-between gap-4">
           <div className="font-[family-name:var(--font-noto-serif)] text-base tracking-wide">
@@ -55,7 +41,7 @@ export function DynastyExpanded({
               transition: { staggerChildren: 0.02, delayChildren: 0.02 },
             },
           }}
-          className="flex flex-col gap-2"
+          className="flex flex-wrap gap-4"
         >
           <AnimatePresence initial={false}>
             {dramas.map((drama) => (
@@ -71,11 +57,7 @@ export function DynastyExpanded({
                 exit={{ opacity: 0, y: 6 }}
                 transition={{ type: "spring", stiffness: 320, damping: 26 }}
               >
-                <DramaRow
-                  drama={drama}
-                  onHover={hover.open}
-                  onLeave={() => hover.scheduleClose(120)}
-                />
+                <DramaCard drama={drama} onClick={onDramaClick} />
               </motion.div>
             ))}
           </AnimatePresence>
@@ -84,4 +66,3 @@ export function DynastyExpanded({
     </motion.div>
   );
 }
-

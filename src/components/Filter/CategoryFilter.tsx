@@ -37,13 +37,12 @@ export function CategoryFilter({
 }) {
   return (
     <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2 py-1 backdrop-blur-md">
-      <OptionButton label="全部" active={value === "all"} onClick={() => onChange("all")} />
-      <div className="h-4 w-px bg-white/10" />
       <OptionButton
         label="严肃正剧"
         active={value === "serious"}
         onClick={() => onChange("serious")}
       />
+      <div className="h-4 w-px bg-white/10" />
       <OptionButton
         label="史事演义"
         active={value === "romance"}
