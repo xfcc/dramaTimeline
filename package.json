@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "publish-posters": "node scripts/publish-posters.mjs",
+    "publish-posters:push": "node scripts/publish-posters.mjs --push"
   },
   "dependencies": {
     "framer-motion": "^12.38.0",
