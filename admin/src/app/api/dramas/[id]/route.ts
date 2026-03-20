@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { getDramas, saveDramas } from "@/lib/data";
+import { getDramas, getDynasties, saveDramas } from "@/lib/data";
+import { validateDramaCrossFields } from "@/lib/quality";
 import { dramaSchema } from "@/lib/validation";
 
 type Ctx = { params: Promise<{ id: string }> };
@@ -30,10 +31,25 @@ export async function PUT(request: Request, ctx: Ctx) {
   }
 
   const dramas = await getDramas();
+  const dynasties = await getDynasties();
   const index = dramas.findIndex((d) => d.id === id);
 
   if (index === -1) {
     return NextResponse.json({ error: "未找到该剧集" }, { status: 404 });
+  }
+
+  const crossErrors = validateDramaCrossFields(result.data, dynasties);
+  if (crossErrors.length > 0) {
+    return NextResponse.json(
+      {
+        error: "校验失败",
+        errors: crossErrors.map((message) => ({
+          path: ["dynasty_id"],
+          message,
+        })),
+      },
+      { status: 400 },
+    );
   }
 
   dramas[index] = { ...result.data, id };

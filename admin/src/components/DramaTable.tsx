@@ -142,14 +142,38 @@ export function DramaTable({
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">
                 海报
               </th>
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">
+                填写进度
+              </th>
               <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-zinc-500">
                 操作
               </th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map((d) => (
-              <tr
+            {filtered.map((d) => {
+              const detailFields = [
+                !!d.title?.trim(),
+                d.episode_count > 0,
+                Number.isInteger(d.release_year),
+                !!d.category,
+                d.douban_rating != null,
+                d.douban_rating_count != null,
+                !!d.historical_anchor?.trim(),
+                !!d.core_tension?.trim(),
+                Number.isInteger(d.story_start_year),
+                Number.isInteger(d.story_end_year),
+                !!d.dynasty_id?.trim(),
+                d.platforms.length > 0 &&
+                  d.platforms.some(
+                    (p) => !!p.name?.trim() && !!p.url?.trim(),
+                  ),
+                !!d.poster_url,
+              ];
+              const totalCount = detailFields.length;
+              const filledCount = detailFields.filter(Boolean).length;
+              return (
+                <tr
                 key={d.id}
                 className="border-b border-zinc-800/50 transition-colors hover:bg-zinc-800/30"
               >
@@ -183,6 +207,17 @@ export function DramaTable({
                     <span className="text-xs text-zinc-600">—</span>
                   )}
                 </td>
+                <td className="px-4 py-3">
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs ${
+                      filledCount === totalCount
+                        ? "bg-emerald-500/10 text-emerald-400"
+                        : "bg-amber-500/10 text-amber-400"
+                    }`}
+                  >
+                    {filledCount}/{totalCount}
+                  </span>
+                </td>
                 <td className="px-4 py-3 text-right">
                   <div className="flex items-center justify-end gap-2">
                     <Link
@@ -201,11 +236,12 @@ export function DramaTable({
                   </div>
                 </td>
               </tr>
-            ))}
+              );
+            })}
             {filtered.length === 0 && (
               <tr>
                 <td
-                  colSpan={8}
+                  colSpan={9}
                   className="px-4 py-12 text-center text-zinc-500"
                 >
                   没有找到匹配的剧集
