@@ -11,7 +11,7 @@ export const dynastySchema = z
     end_year: z.number({ coerce: true }).int("必须为整数"),
     display_order: z.number({ coerce: true }).int("必须为整数").min(0, "排序值不能为负数"),
     parent_id: z.string().nullable(),
-    track: z.string().min(1, "轨道不能为空"),
+    track: z.literal("main"),
     color: z.string().min(1, "颜色不能为空"),
   })
   .refine((d) => d.start_year < d.end_year, {

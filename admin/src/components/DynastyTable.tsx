@@ -76,7 +76,7 @@ export function DynastyTable({
                 时间范围
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">
-                轨道
+                展示
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">
                 父级
@@ -120,7 +120,7 @@ export function DynastyTable({
                   </td>
                   <td className="px-4 py-3">
                     <span className="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-400">
-                      {d.track}
+                      主轴
                     </span>
                   </td>
                   <td className="px-4 py-3 text-zinc-400">

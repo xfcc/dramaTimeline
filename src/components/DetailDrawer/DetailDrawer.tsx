@@ -186,6 +186,16 @@ export function DetailDrawer({
               </p>
             </div>
 
+            {/* Theme dynasty */}
+            <div>
+              <div className="text-[11px] font-medium uppercase tracking-wider text-[color:var(--fg-muted)]">
+                主题朝代
+              </div>
+              <p className="mt-1.5 text-sm text-[color:var(--fg-primary)]">
+                {dynastyName || "—"}
+              </p>
+            </div>
+
             {/* Timeline span */}
             <div>
               <div className="text-[11px] font-medium uppercase tracking-wider text-[color:var(--fg-muted)]">
@@ -194,11 +204,6 @@ export function DetailDrawer({
               <p className="mt-1.5 text-sm text-[color:var(--fg-primary)]">
                 {formatYear(drama.story_start_year)} –{" "}
                 {formatYear(drama.story_end_year)}
-                {dynastyName ? (
-                  <span className="ml-2 text-[color:var(--fg-muted)]">
-                    （{dynastyName}）
-                  </span>
-                ) : null}
               </p>
             </div>
 

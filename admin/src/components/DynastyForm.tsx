@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 
 import type { Dynasty } from "@/types";
 
-const TRACK_OPTIONS = ["main", "parallel_1", "parallel_2", "parallel_3"];
-
 const inputClass =
   "w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50";
 const labelClass = "mb-1.5 block text-sm font-medium text-zinc-300";
@@ -29,7 +27,7 @@ export function DynastyForm({
     end_year: initialData?.end_year ?? 0,
     display_order: initialData?.display_order ?? 0,
     parent_id: initialData?.parent_id ?? "",
-    track: initialData?.track ?? "main",
+    track: "main",
     color: initialData?.color ?? "",
   });
 
@@ -182,10 +180,10 @@ export function DynastyForm({
 
       <fieldset className="space-y-4 rounded-xl border border-zinc-800 p-5">
         <legend className="px-2 text-xs font-medium uppercase tracking-wider text-zinc-500">
-          层级与轨道
+          层级与展示
         </legend>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           <div>
             <label className={labelClass}>父级朝代</label>
             <select
@@ -202,20 +200,6 @@ export function DynastyForm({
             </select>
           </div>
           <div>
-            <label className={labelClass}>轨道</label>
-            <select
-              value={form.track}
-              onChange={(e) => set("track", e.target.value)}
-              className={inputClass}
-            >
-              {TRACK_OPTIONS.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
             <label className={labelClass}>颜色</label>
             <input
               type="text"
@@ -227,6 +211,9 @@ export function DynastyForm({
             {errors.color && <p className={errorClass}>{errors.color}</p>}
           </div>
         </div>
+        <p className="text-xs text-zinc-500">
+          并行轨道已停用，所有朝代统一合并到主轴展示。
+        </p>
       </fieldset>
 
       <div className="flex items-center gap-3">

@@ -3,7 +3,7 @@ import type { Drama, Dynasty } from "@/types";
 export type QualityIssue = {
   kind:
     | "invalid_dynasty_ref"
-    | "story_out_of_dynasty_range"
+    | "theme_dynasty_time_nonoverlap"
     | "missing_poster"
     | "rating_without_count"
     | "count_without_rating"
@@ -39,16 +39,17 @@ export function collectDramaQualityIssues(
       continue;
     }
 
-    if (
-      drama.story_start_year < dynasty.start_year ||
-      drama.story_end_year > dynasty.end_year
-    ) {
+    const hasOverlap =
+      drama.story_end_year >= dynasty.start_year &&
+      drama.story_start_year <= dynasty.end_year;
+
+    if (!hasOverlap) {
       issues.push({
-        kind: "story_out_of_dynasty_range",
-        level: "error",
+        kind: "theme_dynasty_time_nonoverlap",
+        level: "warning",
         dramaId: drama.id,
         dramaTitle: drama.title,
-        message: `剧情年代 ${drama.story_start_year}~${drama.story_end_year} 超出朝代 ${dynasty.name}(${dynasty.start_year}~${dynasty.end_year})`,
+        message: `主题朝代为 ${dynasty.name}，但剧情年代 ${drama.story_start_year}~${drama.story_end_year} 与其时间区间 ${dynasty.start_year}~${dynasty.end_year} 不重叠，请确认主题归属是否符合预期`,
       });
     }
 
@@ -108,15 +109,6 @@ export function validateDramaCrossFields(
   if (!dynasty) {
     errors.push(`朝代 ID 不存在: ${drama.dynasty_id}`);
     return errors;
-  }
-
-  if (
-    drama.story_start_year < dynasty.start_year ||
-    drama.story_end_year > dynasty.end_year
-  ) {
-    errors.push(
-      `剧情年代 ${drama.story_start_year}~${drama.story_end_year} 超出朝代 ${dynasty.name}(${dynasty.start_year}~${dynasty.end_year})`,
-    );
   }
 
   return errors;

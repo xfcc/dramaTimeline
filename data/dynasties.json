@@ -96,7 +96,7 @@
     "end_year": 263,
     "display_order": 32,
     "parent_id": "threeKingdoms",
-    "track": "parallel_1",
+    "track": "main",
     "color": "var(--dyn-shu)"
   },
   {
@@ -106,7 +106,7 @@
     "end_year": 280,
     "display_order": 33,
     "parent_id": "threeKingdoms",
-    "track": "parallel_2",
+    "track": "main",
     "color": "var(--dyn-wu)"
   },
   {
@@ -206,7 +206,7 @@
     "end_year": 1125,
     "display_order": 48,
     "parent_id": "songLiaoXiaJin",
-    "track": "parallel_1",
+    "track": "main",
     "color": "var(--dyn-liao)"
   },
   {
@@ -216,7 +216,7 @@
     "end_year": 1227,
     "display_order": 49,
     "parent_id": "songLiaoXiaJin",
-    "track": "parallel_2",
+    "track": "main",
     "color": "var(--dyn-westernXia)"
   },
   {
@@ -226,7 +226,7 @@
     "end_year": 1234,
     "display_order": 53,
     "parent_id": "songLiaoXiaJin",
-    "track": "parallel_3",
+    "track": "main",
     "color": "var(--dyn-jinDynasty)"
   },
   {

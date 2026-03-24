@@ -5,7 +5,7 @@ import { collectDramaQualityIssues } from "@/lib/quality";
 
 const kindLabel: Record<string, string> = {
   invalid_dynasty_ref: "朝代引用异常",
-  story_out_of_dynasty_range: "剧情年代越界",
+  theme_dynasty_time_nonoverlap: "主题朝代与剧情年代不重叠",
   missing_poster: "缺少海报",
   rating_without_count: "评分人数缺失",
   count_without_rating: "评分缺失",

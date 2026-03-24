@@ -23,7 +23,6 @@ const INDENTED_LINE_X = LINE_X + INDENT;
 type DynastyNode = {
   dynasty: Dynasty;
   children: DynastyNode[];
-  isParallel: boolean;
 };
 
 function buildTree(dynasties: Dynasty[]): DynastyNode[] {
@@ -44,9 +43,7 @@ function buildTree(dynasties: Dynasty[]): DynastyNode[] {
     const children = (childrenMap.get(dynasty.id) ?? [])
       .sort((a, b) => a.display_order - b.display_order)
       .map((c) => build(c));
-    const tracks = new Set(children.map((c) => c.dynasty.track));
-    const isParallel = tracks.size > 1;
-    return { dynasty, children, isParallel };
+    return { dynasty, children };
   }
 
   return roots.sort((a, b) => a.display_order - b.display_order).map(build);
@@ -54,14 +51,6 @@ function buildTree(dynasties: Dynasty[]): DynastyNode[] {
 
 function collectDescendantIds(node: DynastyNode): DynastyId[] {
   return [node.dynasty.id, ...node.children.flatMap(collectDescendantIds)];
-}
-
-function sortChildrenByTrack(children: DynastyNode[]): DynastyNode[] {
-  return [...children].sort((a, b) => {
-    if (a.dynasty.track === "main") return -1;
-    if (b.dynasty.track === "main") return 1;
-    return a.dynasty.track.localeCompare(b.dynasty.track);
-  });
 }
 
 function formatYear(year: number) {
@@ -76,36 +65,6 @@ type TimelineRow = {
   left: React.ReactNode;
   right: React.ReactNode;
 };
-
-/* ─── Curved branch connector (SVG, no right angles) ─── */
-
-function BranchCurve() {
-  const w = LEFT_COL_WIDTH;
-  const startX = LINE_X;
-  const endX = INDENTED_LINE_X;
-  const startY = 0;
-  const endY = 28;
-  const cpx1 = startX + (endX - startX) * 0.5;
-  const cpy1 = startY;
-  const cpx2 = endX - (endX - startX) * 0.2;
-  const cpy2 = endY;
-
-  return (
-    <svg
-      width={w}
-      height={endY + 4}
-      className="absolute left-0 top-0 block overflow-visible"
-      style={{ pointerEvents: "none" }}
-    >
-      <path
-        d={`M ${startX} ${startY} C ${cpx1} ${cpy1}, ${cpx2} ${cpy2}, ${endX} ${endY}`}
-        fill="none"
-        stroke="color-mix(in oklab, var(--timeline-gold) 22%, transparent)"
-        strokeWidth={1}
-      />
-    </svg>
-  );
-}
 
 /* ─── Root ─── */
 
@@ -180,7 +139,7 @@ export function Timeline({
           onClose={drawer.close}
         />
 
-        <div ref={containerRef} className="relative pb-20">
+        <div ref={containerRef} className="relative pb-6">
           {/* Axis outside grid: fixed height = content height so line is visible while scrolling */}
           <div
             className="pointer-events-none absolute left-0 top-0 z-10"
@@ -229,10 +188,10 @@ export function Timeline({
               </div>,
               <div
                 key={`${r.key}-right`}
-                className="min-w-0 pl-6 pb-10"
+                className="min-w-0 pl-6"
                 style={{ gridColumn: 2, gridRow: i + 1 }}
               >
-                {r.right}
+                <div className={i === rows.length - 1 ? "" : "pb-6"}>{r.right}</div>
               </div>,
             ])}
           </div>
@@ -256,88 +215,22 @@ function buildTimelineRows(
   const out: TimelineRow[] = [];
 
   for (const node of tree) {
-    if (node.isParallel) {
-      const sorted = sortChildrenByTrack(node.children);
-      const allDescIds = new Set(collectDescendantIds(node));
-      const childIdSets = sorted.map((c) => ({
-        node: c,
-        ids: new Set(collectDescendantIds(c)),
-      }));
-      const cross: Drama[] = [];
-      const colMap = new Map<DynastyId, Drama[]>();
-      sorted.forEach((c) => colMap.set(c.dynasty.id, []));
-
-      const relevant = dramas
-        .filter((d) => allDescIds.has(d.dynasty_id))
-        .filter(filterFn);
-
-      for (const drama of relevant) {
-        if (drama.dynasty_id === node.dynasty.id) {
-          cross.push(drama);
-          continue;
-        }
-        const matched = childIdSets.filter(({ ids }) =>
-          ids.has(drama.dynasty_id),
-        );
-        if (matched.length > 1) cross.push(drama);
-        else if (matched.length === 1)
-          colMap.get(matched[0].node.dynasty.id)!.push(drama);
-      }
-
-      out.push({
-        key: `parallel-parent-${node.dynasty.id}`,
-        left: (
-          <LeftCellMain
-            dynasty={node.dynasty}
-            formatYear={ctx.formatYear}
-            labelExtra="并行政权"
-          />
-        ),
-        right: (
-          <RightCellDramas
-            dramas={cross}
-            title="跨政权群像"
-            onDramaClick={ctx.onDramaClick}
-          />
-        ),
-      });
-
-      for (const child of sorted) {
-        const childDramas = colMap.get(child.dynasty.id) ?? [];
-        out.push({
-          key: `parallel-branch-${child.dynasty.id}`,
-          left: (
-            <LeftCellBranch
-              dynasty={child.dynasty}
-              formatYear={ctx.formatYear}
-            />
-          ),
-          right: (
-            <RightCellDramas
-              dramas={childDramas}
-              onDramaClick={ctx.onDramaClick}
-            />
-          ),
-        });
-      }
-    } else {
-      const allIds = new Set(collectDescendantIds(node));
-      const dynastyDramas = dramas
-        .filter((d) => allIds.has(d.dynasty_id))
-        .filter(filterFn);
-      out.push({
-        key: `simple-${node.dynasty.id}`,
-        left: (
-          <LeftCellMain dynasty={node.dynasty} formatYear={ctx.formatYear} />
-        ),
-        right: (
-          <RightCellDramas
-            dramas={dynastyDramas}
-            onDramaClick={ctx.onDramaClick}
-          />
-        ),
-      });
-    }
+    const allIds = new Set(collectDescendantIds(node));
+    const dynastyDramas = dramas
+      .filter((d) => allIds.has(d.dynasty_id))
+      .filter(filterFn);
+    out.push({
+      key: `simple-${node.dynasty.id}`,
+      left: (
+        <LeftCellMain dynasty={node.dynasty} formatYear={ctx.formatYear} />
+      ),
+      right: (
+        <RightCellDramas
+          dramas={dynastyDramas}
+          onDramaClick={ctx.onDramaClick}
+        />
+      ),
+    });
   }
 
   return out;
@@ -379,46 +272,6 @@ function LeftCellMain({
               {labelExtra}
             </span>
           ) : null}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-/* ─── Left cell: curved branch + dot + label ─── */
-
-function LeftCellBranch({
-  dynasty,
-  formatYear,
-}: {
-  dynasty: Dynasty;
-  formatYear: (y: number) => string;
-}) {
-  return (
-    <div className="relative z-20 pt-1">
-      <BranchCurve />
-      <div
-        className="absolute h-3 w-3 rounded-full border-2"
-        style={{
-          left: INDENTED_LINE_X - 6,
-          top: 26,
-          backgroundColor: dynasty.color,
-          borderColor:
-            "color-mix(in oklab, var(--timeline-gold) 50%, transparent)",
-        }}
-      />
-      <div
-        className="pt-1"
-        style={{ paddingLeft: INDENTED_LINE_X + 32, paddingTop: 4 }}
-      >
-        <h4
-          className="font-[family-name:var(--font-noto-serif)] text-sm tracking-wide"
-          style={{ color: dynasty.color }}
-        >
-          {dynasty.name}
-        </h4>
-        <p className="mt-0.5 text-[11px] text-[color:var(--fg-muted)]">
-          {formatYear(dynasty.start_year)} – {formatYear(dynasty.end_year)}
         </p>
       </div>
     </div>

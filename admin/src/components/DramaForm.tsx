@@ -161,10 +161,6 @@ export function DramaForm({
   );
   const selectedDynasty =
     sortedDynasties.find((d) => d.id === form.dynasty_id) ?? null;
-  const isStoryRangeOutOfDynasty =
-    !!selectedDynasty &&
-    (form.story_start_year < selectedDynasty.start_year ||
-      form.story_end_year > selectedDynasty.end_year);
 
   return (
     <form onSubmit={handleSubmit} className="max-w-3xl space-y-6">
@@ -213,6 +209,10 @@ export function DramaForm({
               <option value="serious">严肃正剧</option>
               <option value="romance">史事演义</option>
             </select>
+            <p className="mt-1 text-xs text-zinc-500">
+              严肃正剧：主情节以真实历史人物与真实历史事件链推进，尤其围绕著名历史事件展开。
+              史事演义：借历史背景或历史节点讲新故事，或明显偏传奇、武侠、宫斗、探案、架空等类型化表达。
+            </p>
           </div>
         </div>
       </fieldset>
@@ -223,7 +223,7 @@ export function DramaForm({
           AI 辅助填写
         </legend>
         <p className="text-sm text-zinc-400">
-          基于剧名自动建议：分类、朝代、时间锚点、核心张力。建议结果可单项应用后再手动修改。
+          基于剧名自动建议：分类、主题朝代、时间锚点、核心张力。分类会优先判断是否在重演真实历史事件链，而不是只看题材气质。
         </p>
         <textarea
           rows={2}
@@ -275,7 +275,7 @@ export function DramaForm({
                 <div className="text-zinc-100">{aiSuggestion.category}</div>
               </div>
               <div className="rounded border border-zinc-700/60 p-3">
-                <div className="mb-1 text-xs text-zinc-500">朝代建议</div>
+                <div className="mb-1 text-xs text-zinc-500">主题朝代建议</div>
                 <div className="text-zinc-100">{aiSuggestion.dynasty_id}</div>
               </div>
               <div className="col-span-2 rounded border border-zinc-700/60 p-3">
@@ -411,13 +411,13 @@ export function DramaForm({
           历史关联
         </legend>
         <div>
-          <label className={labelClass}>所属朝代</label>
+          <label className={labelClass}>主题朝代</label>
           <select
             value={form.dynasty_id}
             onChange={(e) => set("dynasty_id", e.target.value)}
             className={inputClass}
           >
-            <option value="">请选择朝代</option>
+            <option value="">请选择主题朝代</option>
             {sortedDynasties.map((d) => (
               <option key={d.id} value={d.id}>
                 {d.parent_id ? "　" : ""}
@@ -430,14 +430,12 @@ export function DramaForm({
           )}
           {selectedDynasty && (
             <p className="mt-1 text-xs text-zinc-500">
-              朝代范围：{selectedDynasty.start_year} ~ {selectedDynasty.end_year}
+              历史区间参考：{selectedDynasty.start_year} ~ {selectedDynasty.end_year}
             </p>
           )}
-          {isStoryRangeOutOfDynasty && (
-            <p className={errorClass}>
-              剧情年代超出所选朝代范围，请调整剧情年份或更换朝代
-            </p>
-          )}
+          <p className="mt-1 text-xs text-zinc-500">
+            主题朝代用于用户检索与聚合展示，可与剧情具体年份不完全重合。
+          </p>
         </div>
         <div>
           <label className={labelClass}>时间锚点</label>
