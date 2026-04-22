@@ -4,7 +4,7 @@ import { Sidebar } from "@/components/Sidebar";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Drama Timeline 管理后台",
+  title: "华夏剧典 管理后台",
   description: "历史剧时间轴数据管理",
 };
 

@@ -49,7 +49,7 @@ export function Sidebar() {
     <aside className="fixed left-0 top-0 z-30 flex h-screen w-60 flex-col border-r border-zinc-800 bg-zinc-950">
       <div className="border-b border-zinc-800 px-5 py-5">
         <h1 className="text-sm font-semibold tracking-tight text-zinc-100">
-          Drama Timeline
+          华夏剧典
         </h1>
         <p className="mt-0.5 text-xs text-zinc-500">数据管理后台</p>
       </div>

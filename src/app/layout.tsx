@@ -15,12 +15,12 @@ const notoSerif = Noto_Serif_SC({
 });
 
 export const metadata: Metadata = {
-  title: "国产历史剧全景时间轴",
+  title: "华夏剧典",
   description: "以时间/朝代为锚点的国产历史剧可视化索引引擎。",
-  applicationName: "国产历史剧全景时间轴",
+  applicationName: "华夏剧典",
   metadataBase: new URL("https://example.com"),
   openGraph: {
-    title: "国产历史剧全景时间轴",
+    title: "华夏剧典",
     description: "以时间/朝代为锚点的国产历史剧可视化索引引擎。",
     type: "website",
   },

@@ -121,7 +121,7 @@ export function Timeline({
           <div className="flex items-start justify-between gap-6">
             <div>
               <h1 className="font-[family-name:var(--font-noto-serif)] text-3xl tracking-wide text-[color:var(--fg-primary)]">
-                国产历史剧全景时间轴
+                华夏剧典
               </h1>
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-[color:var(--fg-muted)]">
                 以朝代为锚点，纵览从战国到民国的历史剧图谱。
