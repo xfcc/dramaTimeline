@@ -1,0 +1,50 @@
+{
+  "name": "drama-edit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "华夏剧典本地数据编辑器（Electron）",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "concurrently -k \"vite dev --port 5174 --strictPort\" \"wait-on http://127.0.0.1:5174 && electron .\"",
+    "build:renderer": "vite build",
+    "build": "vite build && electron-builder",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
+    "electron": "^34.2.0",
+    "electron-builder": "^25.1.8",
+    "typescript": "^5",
+    "vite": "^6.0.11",
+    "wait-on": "^8.0.1"
+  },
+  "build": {
+    "appId": "com.huaxia.dramaedit",
+    "productName": "华夏剧典编辑",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": ["zip"]
+    },
+    "win": {
+      "target": ["portable", "zip"]
+    },
+    "linux": {
+      "target": ["AppImage"]
+    }
+  }
+}

@@ -21,6 +21,17 @@
 # misc
 .DS_Store
 *.pem
+Thumbs.db
+.idea/
+*.swp
+*.swo
+
+# Local content bundles (scripts/pack-content-bundle.sh)
+huaxia-content-*.zip
+
+# Caches (optional tooling)
+.turbo/
+.cache/
 
 # debug
 npm-debug.log*
@@ -30,13 +41,13 @@ yarn-error.log*
 
 # env files
 .env*
+!.env.example
 
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
 
 # docs (internal only)
 PRODUCT_SPEC.md
