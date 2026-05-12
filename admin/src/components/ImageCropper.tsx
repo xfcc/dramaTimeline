@@ -184,7 +184,7 @@ export function ImageCropper({
           <div className="flex flex-col gap-4">
             <div>
               <p className="mb-1.5 text-xs text-zinc-500">
-                缩略图 120×180
+                缩略图 240×360
               </p>
               <div
                 ref={previewThumbRef}
@@ -194,7 +194,7 @@ export function ImageCropper({
             </div>
             <div>
               <p className="mb-1.5 text-xs text-zinc-500">
-                详情图 240×360
+                详情图 480×720
               </p>
               <div
                 ref={previewMediumRef}
@@ -333,7 +333,7 @@ export function ImageCropper({
             />
           </div>
           <p className="mt-2 text-xs text-zinc-600">
-            上传后将裁剪为 2:3 比例，自动生成 120×180、240×360、480×720 三种尺寸
+            上传后将裁剪为 2:3 比例，自动生成 240×360、480×720、960×1440 三种尺寸
           </p>
         </div>
       </div>

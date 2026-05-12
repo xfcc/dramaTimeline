@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev -p 3001",
     "build": "next build",
+    "test": "node --test scripts/*.test.mjs",
     "start": "next start -p 3001",
     "tmdb:posters": "node scripts/fetch-tmdb-posters.mjs"
   },

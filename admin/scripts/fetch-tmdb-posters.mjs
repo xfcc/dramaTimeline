@@ -3,16 +3,22 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 
+import {
+  POSTER_SIZES,
+  isUsablePosterUrl,
+  normalizeDoubanPosterUrl,
+  normalizeTmdbPosterUrl,
+} from "./poster-assets.mjs";
+
 const TMDB_BASE = "https://www.themoviedb.org";
-const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/original";
+const DOUBAN_BASE = "https://www.douban.com";
+const DOUBAN_IMAGE_REFERER = "https://movie.douban.com/";
+const USER_AGENT =
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
 const ROOT_DIR = path.resolve(process.cwd(), "..");
 const DRAMAS_PATH = path.join(ROOT_DIR, "data", "dramas.json");
 const POSTERS_DIR = path.join(ROOT_DIR, "public", "posters");
-const SIZES = [
-  { name: "thumb", width: 120, height: 180, quality: 80 },
-  { name: "medium", width: 240, height: 360, quality: 85 },
-  { name: "large", width: 480, height: 720, quality: 90 },
-];
+const SIZES = POSTER_SIZES;
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -76,6 +82,15 @@ function normalize(text) {
 
 function absoluteUrl(urlPath) {
   if (!urlPath) return null;
+  if (
+    urlPath.startsWith("/t/p/") ||
+    urlPath.startsWith("//image.tmdb.org/") ||
+    urlPath.startsWith("//media.themoviedb.org/") ||
+    urlPath.startsWith("https://image.tmdb.org/t/p/") ||
+    urlPath.startsWith("https://media.themoviedb.org/t/p/")
+  ) {
+    return normalizeTmdbPosterUrl(urlPath);
+  }
   if (urlPath.startsWith("http://") || urlPath.startsWith("https://")) {
     return urlPath;
   }
@@ -124,6 +139,11 @@ function decodeHtmlEntities(text) {
     .replace(/&gt;/g, ">");
 }
 
+function extractYear(text) {
+  const matches = [...text.matchAll(/(?:^|[^0-9])(\d{4})(?:[^0-9]|$)/g)];
+  return matches.at(-1)?.[1] ?? null;
+}
+
 function parseSearchCandidates(html) {
   const candidates = [];
   const rowRegex = /<a[^>]*class="[^"]*result[^"]*"[^>]*href="(\/tv\/\d+[^"]*)"[^>]*>[\s\S]*?<\/a>/g;
@@ -163,12 +183,61 @@ function parseSearchCandidates(html) {
   return candidates;
 }
 
+function parseDoubanSearchCandidates(html) {
+  const candidates = [];
+  const resultRegex =
+    /<div class="result">([\s\S]*?)(?=<div class="result">|<div class="back-to-top">)/g;
+  let resultMatch;
+
+  while ((resultMatch = resultRegex.exec(html)) !== null) {
+    const block = resultMatch[1];
+    const imageMatch = block.match(/<img[^>]*src="([^"]+)"/);
+    const titleAttrMatch = block.match(
+      /<a[^>]*title="([^"]+)"[^>]*>\s*<img/i,
+    );
+    const titleLinkMatch = block.match(/<h3>[\s\S]*?<a[^>]*>([\s\S]*?)<\/a>/);
+    const castMatch = block.match(
+      /<span[^>]*class="subject-cast"[^>]*>([\s\S]*?)<\/span>/,
+    );
+
+    const title = decodeHtmlEntities(
+      (
+        titleAttrMatch?.[1] ??
+        titleLinkMatch?.[1]?.replace(/<[^>]+>/g, "") ??
+        ""
+      ).trim(),
+    );
+    if (!title) continue;
+
+    const castText = decodeHtmlEntities(
+      (castMatch?.[1] ?? "").replace(/<[^>]+>/g, " ").trim(),
+    );
+    const year = extractYear(castText);
+
+    const rawPosterUrl = imageMatch?.[1] ?? null;
+
+    candidates.push({
+      name: title,
+      original_name: title,
+      first_air_date: year ? `${year}-01-01` : null,
+      popularity: 0,
+      posterPath:
+        rawPosterUrl && isUsablePosterUrl(rawPosterUrl)
+          ? normalizeDoubanPosterUrl(rawPosterUrl)
+          : null,
+      detailUrl: null,
+      source: "douban",
+    });
+  }
+
+  return candidates;
+}
+
 async function extractPosterFromDetail(detailUrl) {
   const res = await fetch(detailUrl, {
     headers: {
       "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
-      "user-agent":
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+      "user-agent": USER_AGENT,
     },
   });
   if (!res.ok) {
@@ -192,8 +261,7 @@ async function searchTmdbTv(drama) {
   const res = await fetch(url, {
     headers: {
       "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
-      "user-agent":
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+      "user-agent": USER_AGENT,
     },
   });
   if (!res.ok) {
@@ -205,6 +273,7 @@ async function searchTmdbTv(drama) {
   if (!results.length) return null;
 
   const sorted = results
+    .filter((item) => item.posterPath)
     .map((item) => ({ item, score: scoreCandidate(drama, item) }))
     .sort((a, b) => b.score - a.score);
 
@@ -214,6 +283,46 @@ async function searchTmdbTv(drama) {
     best.posterPath = await extractPosterFromDetail(best.detailUrl);
   }
   return best;
+}
+
+async function searchDoubanMovie(drama) {
+  const query = new URLSearchParams({ cat: "1002", q: drama.title });
+  const url = `${DOUBAN_BASE}/search?${query.toString()}`;
+  const res = await fetch(url, {
+    headers: {
+      "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
+      "user-agent": USER_AGENT,
+    },
+  });
+  if (!res.ok) {
+    throw new Error(`Douban search failed (${res.status}) for ${drama.title}`);
+  }
+
+  const html = await res.text();
+  const results = parseDoubanSearchCandidates(html);
+  if (!results.length) return null;
+
+  const sorted = results
+    .filter((item) => item.posterPath)
+    .map((item) => ({ item, score: scoreCandidate(drama, item) }))
+    .sort((a, b) => b.score - a.score);
+
+  return sorted[0]?.item ?? null;
+}
+
+async function searchPosterCandidate(drama) {
+  try {
+    const doubanMatch = await searchDoubanMovie(drama);
+    if (doubanMatch?.posterPath) return doubanMatch;
+  } catch (err) {
+    console.error(`fallback(tmdb): ${drama.title} (${err.message})`);
+  }
+
+  const tmdbMatch = await searchTmdbTv(drama);
+  if (tmdbMatch) {
+    tmdbMatch.source = "tmdb";
+  }
+  return tmdbMatch;
 }
 
 function centerCropToPoster(imageMeta) {
@@ -272,10 +381,15 @@ async function savePosterVariants(dramaId, imageBuffer) {
 }
 
 async function fetchPosterBuffer(posterPathOrUrl) {
-  const imageUrl = posterPathOrUrl.startsWith("/t/p/")
-    ? `${TMDB_IMAGE_BASE}${posterPathOrUrl}`
-    : posterPathOrUrl;
-  const res = await fetch(imageUrl);
+  const imageUrl = normalizeTmdbPosterUrl(posterPathOrUrl);
+  const headers = {
+    "user-agent": USER_AGENT,
+  };
+  if (imageUrl.includes("doubanio.com")) {
+    headers.referer = DOUBAN_IMAGE_REFERER;
+  }
+
+  const res = await fetch(imageUrl, { headers });
   if (!res.ok) {
     throw new Error(`Failed to download poster (${res.status})`);
   }
@@ -311,7 +425,7 @@ async function main() {
 
   for (const drama of picked) {
     try {
-      const match = await searchTmdbTv(drama);
+      const match = await searchPosterCandidate(drama);
       if (!match?.posterPath) {
         skipped += 1;
         console.log(`skip(no poster): ${drama.title}`);
@@ -336,7 +450,9 @@ async function main() {
       await savePosterVariants(drama.id, buffer);
       drama.poster_url = `/posters/medium/${drama.id}.webp`;
       updated += 1;
-      console.log(`updated: ${drama.title} <- ${match.name}`);
+      console.log(
+        `updated: ${drama.title} <- ${match.name} (${match.source ?? "unknown"})`,
+      );
     } catch (err) {
       failed += 1;
       console.error(`failed: ${drama.title} (${err.message})`);

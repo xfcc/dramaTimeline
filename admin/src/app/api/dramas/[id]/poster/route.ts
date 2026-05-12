@@ -8,9 +8,9 @@ import { getDramas, saveDramas } from "@/lib/data";
 const POSTER_DIR = path.resolve(process.cwd(), "..", "public", "posters");
 
 const SIZES = [
-  { name: "thumb", width: 120, height: 180, quality: 80 },
-  { name: "medium", width: 240, height: 360, quality: 85 },
-  { name: "large", width: 480, height: 720, quality: 90 },
+  { name: "thumb", width: 240, height: 360, quality: 82 },
+  { name: "medium", width: 480, height: 720, quality: 88 },
+  { name: "large", width: 960, height: 1440, quality: 92 },
 ] as const;
 
 type Ctx = { params: Promise<{ id: string }> };
