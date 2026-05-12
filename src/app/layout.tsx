@@ -1,18 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Sans_SC, Noto_Serif_SC } from "next/font/google";
 import "./globals.css";
-
-const notoSans = Noto_Sans_SC({
-  variable: "--font-noto-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-});
-
-const notoSerif = Noto_Serif_SC({
-  variable: "--font-noto-serif",
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-});
 
 export const metadata: Metadata = {
   title: "华夏剧典",
@@ -36,11 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
-      <body
-        className={`${notoSans.variable} ${notoSerif.variable} antialiased`}
-      >
-        {children}
-      </body>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

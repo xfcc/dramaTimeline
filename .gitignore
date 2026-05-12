@@ -50,4 +50,5 @@ yarn-error.log*
 *.tsbuildinfo
 
 # docs (internal only)
-PRODUCT_SPEC.md
+/PRODUCT_SPEC.md
+/docs/knowledge/PRODUCT_SPEC.md

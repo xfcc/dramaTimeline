@@ -15,8 +15,6 @@ import { DramaCard } from "@/components/DramaNode/DramaRow";
 const LEFT_COL_WIDTH = 280;
 const LINE_X = 32;
 const LABEL_LEFT = LINE_X + 48;
-const INDENT = 140;
-const INDENTED_LINE_X = LINE_X + INDENT;
 
 /* ─── Dynasty tree ─── */
 
@@ -241,11 +239,9 @@ function buildTimelineRows(
 function LeftCellMain({
   dynasty,
   formatYear,
-  labelExtra,
 }: {
   dynasty: Dynasty;
   formatYear: (y: number) => string;
-  labelExtra?: string;
 }) {
   return (
     <div className="relative z-20 pt-1" style={{ paddingLeft: LABEL_LEFT }}>
@@ -267,11 +263,6 @@ function LeftCellMain({
         </h3>
         <p className="mt-1 text-xs text-[color:var(--fg-muted)]">
           {formatYear(dynasty.start_year)} – {formatYear(dynasty.end_year)}
-          {labelExtra ? (
-            <span className="ml-2 text-[color:var(--timeline-gold)]/60">
-              {labelExtra}
-            </span>
-          ) : null}
         </p>
       </div>
     </div>
@@ -282,20 +273,13 @@ function LeftCellMain({
 
 function RightCellDramas({
   dramas,
-  title,
   onDramaClick,
 }: {
   dramas: Drama[];
-  title?: string;
   onDramaClick: (drama: Drama) => void;
 }) {
   return (
     <div className="min-w-0 max-w-2xl pt-0.5">
-      {title && dramas.length > 0 ? (
-        <p className="mb-2 text-[11px] font-medium tracking-wider uppercase text-[color:var(--fg-muted)]">
-          {title}
-        </p>
-      ) : null}
       {dramas.length > 0 ? (
         <div className="flex flex-wrap gap-4">
           {dramas.map((drama) => (

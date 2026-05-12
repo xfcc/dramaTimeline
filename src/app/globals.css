@@ -6,6 +6,10 @@
   --fg-primary: #e8e6df;
   --fg-muted: #b7b4ab;
 
+  /* Font stacks: avoid build-time downloads from Google Fonts. */
+  --font-noto-sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Heiti SC", system-ui, sans-serif;
+  --font-noto-serif: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+
   /* Signature accents */
   --timeline-gold: #c9a96e;
 
